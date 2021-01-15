@@ -45,10 +45,8 @@ static int abstract_get(void *p, Janet key, Janet *out) {
     if (fun != NULL) {
         Janet argv[] = {janet_wrap_table(abs->t), key};
         Janet r = janet_call(fun, 2, argv);
-        if (!janet_checktype(r, JANET_NIL)) {
-            *out = r;
-            return 1;
-        }
+        *out = r;
+        return 1;
     } else {
         JanetKV *bucket = janet_table_find(abs->t, key);
         if (NULL != bucket && !janet_checktype(bucket->key, JANET_NIL)) {

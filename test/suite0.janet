@@ -1,6 +1,7 @@
 
 (import ../build/abstract :as abstract)
 
+               #(inc (length t))
 
 (def tb @{})
 (table/setproto
@@ -8,7 +9,7 @@
   @{
     :__get (fn [t k]
              (if (= k :length)
-               (inc (length tb))
+               (fn [t] 77)
                (string "value of key " k " is " (table/rawget t k))))
     :__put (fn [t k v] (put t k (string v "_withappendage")))
     :__tostring (fn [t buf] (buffer/push buf "mystringmystring"))
@@ -22,6 +23,7 @@
 (assert (= ab ab))
 (assert (= ab (abstract/new tb)))
 (assert (not= ab (abstract/new @{})))
+(assert (length ab) 77)
 
 (def proto
     @{
@@ -35,5 +37,6 @@
 (string ab)  # => "MyThing: [1 2 3]"
 (def ab2 (abstract/new (table/setproto @{:data [1 2 3]} proto)))
 (compare ab ab2) # => 0
+
 
 
