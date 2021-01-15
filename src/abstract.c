@@ -78,7 +78,7 @@ static void abstract_to_string(void *p, JanetBuffer *buf) {
     abstract_t *abs = (abstract_t *)p;
     JanetFunction *fun = get_dunder_function(abs, "__tostring");
     if (fun != NULL) {
-        Janet argv[] = {janet_wrap_abstract(abs), janet_wrap_buffer(buf)};
+        Janet argv[] = {janet_wrap_table(abs->t), janet_wrap_buffer(buf)};
         janet_call(fun, 2, argv);
     } else {
         janet_buffer_push_string(buf, janet_description(janet_wrap_table(abs->t)));

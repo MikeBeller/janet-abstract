@@ -32,8 +32,8 @@
 (def tb @{:data [1 2 3]})
 (def ab (abstract/new (table/setproto tb proto)))
 
-(tracev (string ab))  # => "MyThing: [1 2 3]"
+(string ab)  # => "MyThing: [1 2 3]"
 (def ab2 (abstract/new (table/setproto @{:data [1 2 3]} proto)))
-(tracev (compare ab ab2)) # => 0
+(compare ab ab2) # => 0
 
 
