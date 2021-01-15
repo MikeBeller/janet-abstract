@@ -46,24 +46,32 @@ jpm install https://github.com/MikeBeller/janet-abstract.git
 One of the use cases I have for this module is to allow the development
 of new container types using pure Janet code with no C.  However developing
 this caused me to observe that there is a limitation in Janet with regard
-to developing containers as abstract types, regardless of whether it is
-done in Janet or in C:
+to developing containers as abstract types, regardless of whether you are
+developing in C or in Janet (using, for example, this module):
 
 Abstract types in Janet allow the developer to "hook" the `get` function
 in order to simulate indexing.  But the `get` function is also used for
-retrieving methods on the abstract type.  If the key to `get` is a keyword,
-the abstract type is supposed to look in its method table and return a
-method if found.  This means that if you want to create a container type
-using an abstract type, you probably should not allow storage of entries
-where the keys are keywords.  Otherwise, if someone decides to store
-a :length key in your data structure, the (length ...) function in Janet
-will stop working for your data structure.   :-(
+retrieving methods on the abstract type.  By convention, if the key to
+`get` is a keyword, the abstract type is supposed to look in its method
+table and return a method with the name of the keyword if found.
 
-Is there some way to straighten out two things in the core:
-(1) get function in the abstract type header is overloaded for method
-retrieval and also available for "other uses", and (2) `length` is
-implemented in the core so that it calls the method :length, rather than
-having its own function pointer in the abstract type header.  Both
-of these issues lead to difficulty implementing containers in Janet
-outside the core, regardless of whether they are in C or Janet.
+Furthermore, one of the important core functions for working with data
+structures, `length`, is implemented in abstract types as a method.  Whereas
+most others such as `next`, `tostring` are implemented as function pointers in
+the abstract type header.
+
+This means that if you want to create a container type using an abstract type,
+and particularly if you want to support the `length` core function, you
+probably should not allow storage of entries where the keys are keywords.
+Otherwise, if someone decides to store a :length key in your data structure,
+the (length ...) function in Janet will stop working for your data structure.
+:-(
+
+Is there some way to straighten out two things in the core? (1) get function in
+the abstract type header is overloaded for method retrieval and also available
+for "other uses", and (2) `length` is implemented in the core so that it calls
+the method :length, rather than having its own function pointer in the abstract
+type header.  Both of these issues combined lead to difficulty implementing
+containers in Janet outside the core, regardless of whether they are in C or
+Janet.
 
