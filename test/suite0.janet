@@ -3,27 +3,27 @@
 
                #(inc (length t))
 
-(def tb @{})
+(def tb @{"A" 1 "B" 2})
 (table/setproto
   tb
   @{
     :__get (fn [t k]
              (if (= k :length)
-               (fn [t] 77)
-               (string "value of key " k " is " (table/rawget t k))))
-    :__put (fn [t k v] (put t k (string v "_withappendage")))
-    :__tostring (fn [t buf] (buffer/push buf "mystringmystring"))
+               (fn [ab] (length (abstract/unwrap ab)))
+               (table/rawget t k)))
+    :__put (fn [t k v] (put t k (string v "x")))
+    :__tostring (fn [t buf] (buffer/format buf "<abstract/new %j>" t))
     :__compare (fn [a b] (compare a b))})
 (def ab (abstract/new tb))
 
-(assert (= (get ab "foo") "value of key foo is "))
+(assert (= (get ab "foo") nil))
 (put ab "bar" "barval")
-(assert (= (get ab "bar") "value of key bar is barval_withappendage"))
-(assert (= (string ab) "mystringmystring"))
+(assert (= (get ab "bar") "barvalx"))
+(assert (= (string ab) `<abstract/new @{"bar" "barvalx" "A" 1 "B" 2}>`))
 (assert (= ab ab))
 (assert (= ab (abstract/new tb)))
 (assert (not= ab (abstract/new @{})))
-(assert (length ab) 77)
+(assert (= (length ab) 3))
 
 (def proto
     @{

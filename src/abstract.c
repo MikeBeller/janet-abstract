@@ -134,9 +134,15 @@ static Janet cfun_abstract_new(int32_t argc, Janet *argv) {
     return janet_wrap_abstract(abs);
 }
 
+static Janet cfun_abstract_unwrap(int32_t argc, Janet *argv) {
+    janet_fixarity(argc, 1);
+    abstract_t *abs = janet_getabstract(argv, 0, &abstract_type);
+    return janet_wrap_table(abs->t);
+}
 
 static const JanetReg cfuns[] = {
-    {"new", cfun_abstract_new, NULL},
+    {"new", cfun_abstract_new, "Wrap a table as an abstract type"},
+    {"unwrap", cfun_abstract_unwrap, "Unwrap the table from an abstract type"},
     {NULL, NULL, NULL}
 };
 
