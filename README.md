@@ -51,11 +51,11 @@ done in Janet or in C:
 
 Abstract types in Janet allow the developer to "hook" the `get` function
 in order to simulate indexing.  But the `get` function is also used for
-retrieving methods on the abstract type.  If the key to `get` is a symbol,
+retrieving methods on the abstract type.  If the key to `get` is a keyword,
 the abstract type is supposed to look in its method table and return a
 method if found.  This means that if you want to create a container type
 using an abstract type, you probably should not allow storage of entries
-where the keys are symbols.  Otherwise, if someone decides to store
+where the keys are keywords.  Otherwise, if someone decides to store
 a :length key in your data structure, the (length ...) function in Janet
 will stop working for your data structure.   :-(
 
@@ -66,8 +66,4 @@ implemented in the core so that it calls the method :length, rather than
 having its own function pointer in the abstract type header.  Both
 of these issues lead to difficulty implementing containers in Janet
 outside the core, regardless of whether they are in C or Janet.
-
-I suppose the answer could be "if you are going to create a container
-outside the core you can not use symbols as keys".  If that be so, then
-we should at least write that down somewhere.
 
